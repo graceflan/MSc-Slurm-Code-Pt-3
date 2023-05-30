@@ -21,7 +21,7 @@ Quick advice note: put *name*_alM_r_cT_f.fasta in a new file with your gene name
 
 echo $SLURM_ARRAY_TASK_ID
 
-name=$(awk -v lineid=$SLURM_ARRAY_TASK_ID 'NR==lineid{print;exit}' /home/gflanaga/DIR/HP_out/alignments/edited/alM_r_o/IQtree/test-gene-names-new.txt)
+name=$(awk -v lineid=$SLURM_ARRAY_TASK_ID 'NR==lineid{print;exit}' /home/gflanaga/DIR/HP_out/alignments/edited/alM_r_o/IQtree/gene-names-new.txt)
 
 echo $name
 
@@ -38,6 +38,28 @@ Run IQTREE
 ```
 sbatch /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/iqtree-script.sh
 ```
+
+## RAxML
+```
+#!/bin/bash
+#
+#SBATCH --chdir=/PATH/PATH/alignments/alM_r_o/IQtree
+#SBATCH --job-name=raxml
+#SBATCH --partition=medium      
+#SBATCH --array=1-*number of genes*%50        
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8      
+#SBATCH --mem=4G
+#SBATCH --mail-user=xxx@zzz.org
+#SBATCH --mail-type=END,FAIL
+
+echo $SLURM_ARRAY_TASK_ID
+
+name=$(awk -v lineid=$SLURM_ARRAY_TASK_ID 'NR==lineid{print;exit}' /PATH/PATH//edited/alM_r_o/IQtree/gene-names-new.txt)
+
+echo $name
+
+raxmlHPC-PTHREADS -T 8 -m GTRGAMMA -f a -p 2345 -x 2345 -# 500 -k -s "$name".fasta -n "$name"_tree
 
 
 
