@@ -159,14 +159,14 @@ cd /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree              # path to the 
 
 while read name
 do cat "$name"_L_alM_r_o_CI85_T_o_g.raxml.support >> /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/CDS_L_alM_r_o_CI85_T_o_g_c0all_trees.tre && echo "" >> //home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/CDS_L_alM_r_o_CI85_T_o_g_c0all_trees.tre
-done < /home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/alignments/edited/alM_r_o/IQtree/L_o_CI85_c0all_names.txt
+done < /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/L_o_CI85_c0all_names.txt
 
 # Run all astral trees (sequencial because quick, could of course make an array job)
 cd /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/
 
 while read name;
 do	
-	/home/gflanaga/scratch/apps/newick-utils-1.6/src/nw_ed "$name".tre 'i & b<=10' o > "$name"_BP10.tre
+	/home/DIR/apps/newick-utils-1.6/src/nw_ed "$name".tre 'i & b<=10' o > "$name"_BP10.tre
 	java -jar /home/DIR/apps/Astral/astral.5.7.5.jar -i "$name"_BP10.tre -t 2 -o "$name"_BP10_SpeciesTree_annotQ.tre
 	java -jar /home/DIR/apps/Astral/astral.5.7.5.jar -i "$name"_BP10.tre -t 0 -o "$name"_BP10_SpeciesTree.tre
 	pxrr -t "$name"_BP10_SpeciesTree.tre -g Ceroxylon_quindiuense > "$name"_BP10_SpeciesTree_rooted.tre
