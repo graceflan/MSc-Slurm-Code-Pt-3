@@ -128,12 +128,12 @@ raxml-ng --bsconverge --bs-trees $name.raxml.bootstraps --prefix $name --seed 1 
 ```
 Upload
 ```
-scp RAxML-script.sh gflanaga@gruffalo.cropdiversity.ac.uk:/home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/alignments/edited/alM_r_o/IQtree
+scp RAxML-script.sh DIR/HP_out/alignments/edited/alM_r_o/IQtree
 ```
 
 Run
 ```
-sbatch /home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/alignments/edited/alM_r_o/IQtree/RAxML-script.sh
+sbatch /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/RAxML-script.sh
 ```
 
 ## SPECIES TREE
@@ -153,35 +153,35 @@ plot_Astral_trees_v3_small_tree.R
 ```
 #!/bin/bash
 #
-#SBATCH --chdir=/home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/CDS
+#SBATCH --chdir=/home/DIR/HP_out/CDS
 #SBATCH --job-name=astral
 #SBATCH --partition=short	## ok if one species takes less than 6 hours, otherwise use medium
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16G           # decrease if few taxa
-#SBATCH --mail-user=s.bellot@kew.org
+#SBATCH --mail-user=email@kew.org
 #SBATCH --mail-type=END,FAIL
 
 
-cd /home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/alignments/edited/alM_r_o/IQtree              # path to the folder with all gene trees
+cd /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree              # path to the folder with all gene trees
 
 while read name
-do cat "$name"_L_alM_r_o_CI85_T_o_g.raxml.support >> /home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/alignments/edited/alM_r_o/IQtree/CDS_L_alM_r_o_CI85_T_o_g_c0all_trees.tre && echo "" >> //home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/alignments/edited/alM_r_o/IQtree/CDS_L_alM_r_o_CI85_T_o_g_c0all_trees.tre
+do cat "$name"_L_alM_r_o_CI85_T_o_g.raxml.support >> /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/CDS_L_alM_r_o_CI85_T_o_g_c0all_trees.tre && echo "" >> //home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/CDS_L_alM_r_o_CI85_T_o_g_c0all_trees.tre
 done < /home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/alignments/edited/alM_r_o/IQtree/L_o_CI85_c0all_names.txt
 
 # Run all astral trees (sequencial because quick, could of course make an array job)
-cd /home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/alignments/edited/alM_r_o/IQtree/
+cd /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/
 
 while read name;
 do	
 	/home/gflanaga/scratch/apps/newick-utils-1.6/src/nw_ed "$name".tre 'i & b<=10' o > "$name"_BP10.tre
-	java -jar /home/gflanaga/scratch/apps/Astral/astral.5.7.5.jar -i "$name"_BP10.tre -t 2 -o "$name"_BP10_SpeciesTree_annotQ.tre
-	java -jar /home/gflanaga/scratch/apps/Astral/astral.5.7.5.jar -i "$name"_BP10.tre -t 0 -o "$name"_BP10_SpeciesTree.tre
+	java -jar /home/DIR/apps/Astral/astral.5.7.5.jar -i "$name"_BP10.tre -t 2 -o "$name"_BP10_SpeciesTree_annotQ.tre
+	java -jar /home/DIR/apps/Astral/astral.5.7.5.jar -i "$name"_BP10.tre -t 0 -o "$name"_BP10_SpeciesTree.tre
 	pxrr -t "$name"_BP10_SpeciesTree.tre -g Ceroxylon_quindiuense > "$name"_BP10_SpeciesTree_rooted.tre
 	pxrr -t "$name"_BP10_SpeciesTree_annotQ.tre -g Ceroxylon_quindiuense > "$name"_BP10_SpeciesTree_annotQ_rooted.tre
 	sed 's/\;\n/\;\r\n/' "$name"_BP10_SpeciesTree_rooted.tre > "$name"_BP10_SpeciesTree_rooted2.tre
 	sed 's/\;\n/\;\r\n/' "$name"_BP10_SpeciesTree_annotQ_rooted.tre > "$name"_BP10_SpeciesTree_annotQ_rooted2.tre
-done < /home/gflanaga/scratch/private/test/TMP_Irsalina_Syzygium/HP_out/CDS/Tree_files_names_for_Astral_o.txt
+done < /home/DIR/HP_out/CDS/Tree_files_names_for_Astral_o.txt
 ```
 
 
