@@ -9,10 +9,10 @@ Quick advice note: put *name*_alM_r_cT_f.fasta in a new file with your gene name
 ```
 #!/bin/bash
 #
-#SBATCH --chdir=/home/DIR/HP_out/alignments/alM_r_o/IQtree
+#SBATCH --chdir=/home/DIR/HP_out/alignments/edited/alM_r_o/IQtree
 #SBATCH --job-name=iqtree
 #SBATCH --partition=short       
-#SBATCH --array=1-*number of genes*%25
+#SBATCH --array=1-*number of genes*
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
@@ -21,11 +21,12 @@ Quick advice note: put *name*_alM_r_cT_f.fasta in a new file with your gene name
 
 echo $SLURM_ARRAY_TASK_ID
 
-name=$(awk -v lineid=$SLURM_ARRAY_TASK_ID 'NR==lineid{print;exit}' /home/gflanaga/DIR/HP_out/alignments/edited/alM_r_o/IQtree/gene-names-new.txt)
+name=$(awk -v lineid=$SLURM_ARRAY_TASK_ID 'NR==lineid{print;exit}' /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/test-gene-names-new.txt)
 
 echo $name
 
-/home/DIR/apps/iqtree-1.6.12-Linux/bin/iqtree -s "$name".fasta -m MF -AICc -mset JC69,HKY85,GTR,K80 -nt AUTO -ntmax 2
+/home/DIR/apps/iqtree-1.6.12-Linux/bin/iqtree -s "$name"_alM_r_cT_f.fasta -m MF -AICc -nt AUTO -ntmax 2
+
 ```
 
 Upload IQTREE
@@ -40,14 +41,6 @@ sbatch /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/iqtree-script.sh
 ```
 
 ## RAxML
-### GENE TREES
-
-Run iqtree to identify a suitable model of nucleotide substitution for each gene  
-Adapt the following script:
-```
-IQtreeMODELonly_slurm_array2.sh
-```
-2GB and 2 CPUs is enough
 
 ### Get the best model for each gene from the output of IQtree
 Extract the best model from all IQtree output files, from the folder containing the IQtree outputs, run (in an interractive slurm window, not in a slurm script):
@@ -71,7 +64,7 @@ cut -f2 All_models_2.txt > All_models_2_models.txt
 sort -u All_models_2_models.txt > All_models_2_models_su.txt
 ```
 Download the All_models_2_models_su.txt file and open it in excel to see what models there are
-Look if the model name needs to be edited and write down what should be the new model name  (see Sidonie's spreadsheet + here https://github.com/amkozlov/raxml-ng/wiki/Input-data#evolutionary-model and here: http://www.iqtree.org/doc/Substitution-Models)
+Look if the model name needs to be edited and write down what should be the new model name  (see Sidonie's spreadsheet + here https://github.com/amkozlov/raxml-ng/wiki/Input-data#evolutionary-model and here: https://github.com/ddarriba/modeltest/wiki/Models-of-Evolution)
 
 Run an edited version of the command below to edit the model names in the original list (in an interactive slurm window):
 ```
@@ -93,10 +86,10 @@ The first model in All_models_4_models.txt is the model selected for the first g
 ```
 #!/bin/bash
 #
-#SBATCH --chdir=/home/DIR/HP_out/alignments/alM_r_o/IQtree
+#SBATCH --chdir=/home/DIR/HP_out/alignments/edited/alM_r_o/IQtree
 #SBATCH --job-name=raxml
 #SBATCH --partition=short
-#SBATCH --array=1-*number of genes*%25
+#SBATCH --array=1-265
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=8G
@@ -105,11 +98,11 @@ The first model in All_models_4_models.txt is the model selected for the first g
 
 echo $SLURM_ARRAY_TASK_ID
 
-name=$(awk -v lineid=$SLURM_ARRAY_TASK_ID 'NR==lineid{print;exit}' /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/All_models_4_names.txt)   ### list of gene names generated as per instructions
+name=$(awk -v lineid=$SLURM_ARRAY_TASK_ID 'NR==lineid{print;exit}' /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/All_models_4_names.txt)
 
 echo $name
 
-model=$(awk -v lineid=$SLURM_ARRAY_TASK_ID 'NR==lineid{print;exit}' /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/All_models_4_models.txt)   ### list of gene model names generated as per instructions
+model=$(awk -v lineid=$SLURM_ARRAY_TASK_ID 'NR==lineid{print;exit}' /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/All_models_4_models.txt)
 
 echo $model
 
@@ -137,7 +130,7 @@ sbatch /home/DIR/HP_out/alignments/edited/alM_r_o/IQtree/RAxML-script.sh
 ```
 
 ### SPECIES TREE
-
+I recommend making a directory in HP_out called CDS and moving all your raxml files there to keep the data from your final steps together.	
 Create a file called Tree_files_names_for_Astral.txt and write "all_trees" in it
 Check that the names in your gene name list correspond to the genes with which to do the species tree (so exclude failed raxml genes from this list for instance)
 
