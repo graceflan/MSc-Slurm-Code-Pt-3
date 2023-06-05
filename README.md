@@ -162,8 +162,8 @@ do
 	/home/DIR/apps/conda/bin/nw_ed "$name".tre 'i & b<=10' o > "$name"_BP10.tre
 	java -jar /home/DIR/apps/ASTRAL-master/Astral/astral.5.7.8.jar -i all_trees_BP10.tre -t 2 -o "$name"_BP10_SpeciesTree_annotQ.trel
 	java -jar /home/DIR/apps/ASTRAL-master/Astral/astral.5.7.8.jar -i all_trees_BP10.tre -t 0 -o "$name"_BP10_SpeciesTree.tre
-	java -jar /home/DIR/apps/phyutility/phyutility.jar -rr -in "$name"_BP10_SpeciesTree.tre -out "$name"_BP10_SpeciesTree_rooted.tre -names PAFTOL-005473
-	java -jar /home/DIR/apps/phyutility/phyutility.jar -rr -in "$name"_BP10_SpeciesTree_annotQ.tre -out "$name"_BP10_SpeciesTree_annotQ_rooted.tre -names PAFTOL-005473
+	/home/DIR/apps/phyx-master/src/pxrr -t all_trees_BP10_SpeciesTree.tre -g *outgroup* > all_trees_BP10_SpeciesTree_rooted.tre
+	/home/DIR/apps/phyx-master/src/pxrr -t all_trees_BP10_SpeciesTree_annotQ.tre -g *outgroup* -o all_trees_BP10_SpeciesTree_annotQ_rooted.tre
 	sed 's/\;\n/\;\r\n/' "$name"_BP10_SpeciesTree_rooted.tre > all_trees_BP10_SpeciesTree_rooted2.tre
 	sed 's/\;\n/\;\r\n/' "$name"_BP10_SpeciesTree_annotQ_rooted.tre > all_trees_BP10_SpeciesTree_annotQ_rooted2.tre
 	done < /home/DIR/HP_out/CDS/Tree_files_names_for_Astral.txt
